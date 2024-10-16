@@ -1,101 +1,101 @@
-import Image from "next/image";
+'use client';
 
-export default function Home() {
+import { useState, FormEvent } from 'react';
+import Head from 'next/head';
+
+const defaultContent = `<?xml version="1.0" encoding="UTF-8"?>
+<rss version="2.0">
+  <channel>
+    <title>Your RSS Feed Title</title>
+    <link>https://your-website.com</link>
+    <description>Your RSS Feed Description</description>
+    <item>
+      <title>Example Item</title>
+      <link>https://your-website.com/example-item</link>
+      <description>This is an example item in your RSS feed.</description>
+      <pubDate>Mon, 06 Sep 2021 12:00:00 GMT</pubDate>
+    </item>
+  </channel>
+</rss>`;
+
+export default function UploadRSS() {
+  const [filename, setFilename] = useState<string>('');
+  const [content, setContent] = useState<string>(defaultContent);
+  const [message, setMessage] = useState<string>('');
+  const [error, setError] = useState<string>('');
+
+  const handleSubmit = async (e: FormEvent<HTMLFormElement>) => {
+    e.preventDefault();
+    setMessage('');
+    setError('');
+
+    try {
+      const response = await fetch('/api/upload-rss', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({ filename, content }),
+      });
+
+      const data = await response.json();
+
+      if (response.ok) {
+        setMessage(`File uploaded successfully. Access URL: ${data.url}`);
+        setFilename('');
+        setContent('');
+      } else {
+        setError(data.error || 'An error occurred while uploading the file');
+      }
+    } catch (error) {
+      setError('An error occurred while uploading the file');
+      console.log(error);
+    }
+  };
+
   return (
-    <div className="grid grid-rows-[20px_1fr_20px] items-center justify-items-center min-h-screen p-8 pb-20 gap-16 sm:p-20 font-[family-name:var(--font-geist-sans)]">
-      <main className="flex flex-col gap-8 row-start-2 items-center sm:items-start">
-        <Image
-          className="dark:invert"
-          src="https://nextjs.org/icons/next.svg"
-          alt="Next.js logo"
-          width={180}
-          height={38}
-          priority
-        />
-        <ol className="list-inside list-decimal text-sm text-center sm:text-left font-[family-name:var(--font-geist-mono)]">
-          <li className="mb-2">
-            Get started by editing{" "}
-            <code className="bg-black/[.05] dark:bg-white/[.06] px-1 py-0.5 rounded font-semibold">
-              src/app/page.tsx
-            </code>
-            .
-          </li>
-          <li>Save and see your changes instantly.</li>
-        </ol>
+    <div className="container mx-auto px-4 py-8">
+      <Head>
+        <title>Upload RSS Feed</title>
+        <link rel="icon" href="/favicon.ico" />
+      </Head>
 
-        <div className="flex gap-4 items-center flex-col sm:flex-row">
-          <a
-            className="rounded-full border border-solid border-transparent transition-colors flex items-center justify-center bg-foreground text-background gap-2 hover:bg-[#383838] dark:hover:bg-[#ccc] text-sm sm:text-base h-10 sm:h-12 px-4 sm:px-5"
-            href="https://vercel.com/new?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            <Image
-              className="dark:invert"
-              src="https://nextjs.org/icons/vercel.svg"
-              alt="Vercel logomark"
-              width={20}
-              height={20}
-            />
-            Deploy now
-          </a>
-          <a
-            className="rounded-full border border-solid border-black/[.08] dark:border-white/[.145] transition-colors flex items-center justify-center hover:bg-[#f2f2f2] dark:hover:bg-[#1a1a1a] hover:border-transparent text-sm sm:text-base h-10 sm:h-12 px-4 sm:px-5 sm:min-w-44"
-            href="https://nextjs.org/docs?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            Read our docs
-          </a>
+      <h1 className="text-3xl font-bold mb-6">Upload RSS Feed</h1>
+
+      <form onSubmit={handleSubmit} className="space-y-4">
+        <div>
+          <label htmlFor="filename" className="block mb-1">
+            Filename:
+          </label>
+          <input
+            type="text"
+            id="filename"
+            value={filename}
+            onChange={(e) => setFilename(e.target.value)}
+            required
+            className="w-full px-3 py-2 border border-gray-300 rounded-md"
+          />
         </div>
-      </main>
-      <footer className="row-start-3 flex gap-6 flex-wrap items-center justify-center">
-        <a
-          className="flex items-center gap-2 hover:underline hover:underline-offset-4"
-          href="https://nextjs.org/learn?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <Image
-            aria-hidden
-            src="https://nextjs.org/icons/file.svg"
-            alt="File icon"
-            width={16}
-            height={16}
+        <div>
+          <label htmlFor="content" className="block mb-1">
+            XML Content:
+          </label>
+          <textarea
+            id="content"
+            value={content}
+            onChange={(e) => setContent(e.target.value)}
+            required
+            rows={10}
+            className="w-full px-3 py-2 border border-gray-300 rounded-md"
           />
-          Learn
-        </a>
-        <a
-          className="flex items-center gap-2 hover:underline hover:underline-offset-4"
-          href="https://vercel.com/templates?framework=next.js&utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <Image
-            aria-hidden
-            src="https://nextjs.org/icons/window.svg"
-            alt="Window icon"
-            width={16}
-            height={16}
-          />
-          Examples
-        </a>
-        <a
-          className="flex items-center gap-2 hover:underline hover:underline-offset-4"
-          href="https://nextjs.org?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <Image
-            aria-hidden
-            src="https://nextjs.org/icons/globe.svg"
-            alt="Globe icon"
-            width={16}
-            height={16}
-          />
-          Go to nextjs.org →
-        </a>
-      </footer>
+        </div>
+        <button type="submit" className="bg-blue-500 text-white px-4 py-2 rounded-md hover:bg-blue-600">
+          Upload RSS Feed
+        </button>
+      </form>
+
+      {message && <p className="mt-4 text-green-600">{message}</p>}
+      {error && <p className="mt-4 text-red-600">{error}</p>}
     </div>
   );
 }
