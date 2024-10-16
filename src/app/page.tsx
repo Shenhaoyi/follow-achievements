@@ -150,7 +150,8 @@ export default function UploadRSS() {
       <Content style={{ padding: '24px', background: '#f0f2f5' }}>
         <Card style={{ maxWidth: 800, margin: '0 auto' }}>
           <Form form={form} onFinish={handleSubmit} layout="vertical">
-            <Form.Item label={<Title level={4}>第一步：复制网址，然后去 Follow 中订阅</Title>}>
+            <Title level={4}>第一步：复制网址，然后去 Follow 中订阅</Title>
+            <Form.Item label="网址">
               <Input.Group compact>
                 <Input style={{ width: 'calc(100% - 200px)' }} value={fileUrl} readOnly />
                 <Button type="primary" icon={<CopyOutlined />} onClick={copyToClipboard}>
@@ -159,19 +160,14 @@ export default function UploadRSS() {
               </Input.Group>
             </Form.Item>
             <Form.Item>
-              <Button icon={<ReloadOutlined />} onClick={regenerateFile} type="dashed" block>
-                重新生成文件
+              <Button icon={<ReloadOutlined />} onClick={regenerateFile} type="primary" block>
+                重新生成文件（多次认证时使用）
               </Button>
             </Form.Item>
-            <Form.Item
-              name="content"
-              label={
-                <Title level={4}>
-                  第二步：在 Follow 中右键订阅源，打开认证页面，并将相关内容复制并填入文件响应位置
-                </Title>
-              }
-              rules={[{ required: true, message: '请输入 XML 内容！' }]}
-            >
+            <Title level={4}>
+              第二步：在 Follow 中右键订阅源，打开认证页面，并将相关内容复制并填入文件相应位置，然后点击【更新文件】
+            </Title>
+            <Form.Item name="content" label="文件内容" rules={[{ required: true, message: '请输入 XML 内容！' }]}>
               <Input.TextArea rows={20} style={{ fontFamily: 'monospace' }} />
             </Form.Item>
             <Form.Item>
@@ -180,8 +176,8 @@ export default function UploadRSS() {
               </Button>
             </Form.Item>
             <Title level={4}>第三步：回到 Follow 认证弹窗中，点击完成认证</Title>
-            <Title level={4}>第四步： 依次点击【个人头像】-【成就】-【mint】，好了 100 power 到手</Title>
-            <Title level={4}>最后： 如果可以的话，请给我奖励 20 power，感谢！</Title>
+            <Title level={4}>第四步：依次点击【个人头像】-【成就】-【mint】，好了 100 power 到手</Title>
+            <Title level={4}>最后：如果可以的话，请给我奖励 20 power（订阅下我的列表，订阅完取消订阅即可），感谢！</Title>
             <Link href="https://app.follow.is/list/69441049205148672">
               <Button type="primary" block>
                 给我奖励 power
