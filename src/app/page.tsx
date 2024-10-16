@@ -89,7 +89,7 @@ export default function UploadRSS() {
       if (response.ok) {
         const { exists, filename } = await response.json();
         if (exists) {
-          message.error('Verification failed: Hash already exists');
+          message.error('已经认证过，为您跳转到对应的文件');
           window.location.href = `/${filename}`;
         } else {
           // 添加到数据
@@ -181,7 +181,7 @@ export default function UploadRSS() {
                   style={{ marginLeft: '8px' }}
                   block
                 >
-                  Verify Hash
+                  验证
                 </Button>
               </Form.Item>
             </Form>
