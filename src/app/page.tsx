@@ -1,7 +1,7 @@
 'use client';
 
 import React, { useState } from 'react';
-import { Form, Input, Button, Typography, message, Card, Layout } from 'antd';
+import { Form, Input, Button, Typography, message, Card, Layout, Spin } from 'antd';
 import { SearchOutlined } from '@ant-design/icons';
 
 const { Title } = Typography;
@@ -53,6 +53,7 @@ function generateRandomFilename() {
 export default function UploadRSS() {
   const [form] = Form.useForm();
   const [hashInput, setHashInput] = useState('');
+  const [loading, setLoading] = useState(false);
 
   const addHashValue = async (hash: string, filename: string) => {
     try {
@@ -83,6 +84,7 @@ export default function UploadRSS() {
     }
 
     try {
+      setLoading(true);
       const response = await fetch(`/api/hash-values?hash=${hashInput}`);
       if (response.ok) {
         const { exists, filename } = await response.json();
@@ -108,6 +110,8 @@ export default function UploadRSS() {
     } catch (error) {
       console.error('Error verifying hash:', error);
       message.error('Failed to verify hash');
+    } finally {
+      setLoading(false);
     }
   };
 
@@ -133,50 +137,58 @@ export default function UploadRSS() {
   };
 
   return (
-    <Layout style={{ minHeight: '100vh' }}>
-      <Header style={{ background: '#fff', padding: '0 20px', boxShadow: '0 2px 8px rgba(0,0,0,0.06)' }}>
-        <Title level={2} style={{ margin: '16px 0' }}>
-          自助认证 Follow 订阅源，获取 100 power
-        </Title>
-      </Header>
-      <Content style={{ padding: '24px', background: '#f0f2f5' }}>
-        <Card style={{ maxWidth: 800, margin: '0 auto' }}>
-          <Form form={form} onFinish={verifyHash} layout="vertical">
-            <Title level={4}>
-              第一步：请先点击下方按钮给我奖励 20 power（订阅下我的列表，订阅完取消订阅即可），感谢！
-            </Title>
-            <Form.Item>
-              <Button
-                type="primary"
-                block
-                onClick={() => {
-                  window.open('https://app.follow.is/list/69441049205148672', '_blank');
-                }}
-              >
-                给我奖励 power
-              </Button>
-            </Form.Item>
+    <Spin spinning={loading} tip="Loading...">
+      <Layout style={{ minHeight: '100vh' }}>
+        <Header style={{ background: '#fff', padding: '0 20px', boxShadow: '0 2px 8px rgba(0,0,0,0.06)' }}>
+          <Title level={2} style={{ margin: '16px 0' }}>
+            自助认证 Follow 订阅源，获取 100 power
+          </Title>
+        </Header>
+        <Content style={{ padding: '24px', background: '#f0f2f5' }}>
+          <Card style={{ maxWidth: 800, margin: '0 auto' }}>
+            <Form form={form} onFinish={verifyHash} layout="vertical">
+              <Title level={4}>
+                第一步：请先点击下方按钮给我奖励 20 power（订阅下我的列表，订阅完取消订阅即可），感谢！
+              </Title>
+              <Form.Item>
+                <Button
+                  type="primary"
+                  block
+                  onClick={() => {
+                    window.open('https://app.follow.is/list/69441049205148672', '_blank');
+                  }}
+                >
+                  给我奖励 power
+                </Button>
+              </Form.Item>
 
-            <Title level={4}>
-              第二步：复制订阅时扣除 power 的交易哈希值（见交易记录中最后一列）到下方输入框，点击验证
-            </Title>
-            <Form.Item label="交易哈希值">
-              <Input
-                value={hashInput}
-                onChange={(e) => setHashInput(e.target.value)}
-                placeholder="Enter hash value to verify"
-                style={{ width: 'calc(100% - 120px)' }}
-              />
-            </Form.Item>
-            <Form.Item>
-              <Button type="primary" icon={<SearchOutlined />} onClick={verifyHash} style={{ marginLeft: '8px' }} block>
-                Verify Hash
-              </Button>
-            </Form.Item>
-          </Form>
-          <Title level={4}>第三步：验证完成，则进入认证环节</Title>
-        </Card>
-      </Content>
-    </Layout>
+              <Title level={4}>
+                第二步：复制订阅时扣除 power 的交易哈希值（见交易记录中最后一列）到下方输入框，点击验证
+              </Title>
+              <Form.Item label="交易哈希值">
+                <Input
+                  value={hashInput}
+                  onChange={(e) => setHashInput(e.target.value)}
+                  placeholder="Enter hash value to verify"
+                  style={{ width: 'calc(100% - 120px)' }}
+                />
+              </Form.Item>
+              <Form.Item>
+                <Button
+                  type="primary"
+                  icon={<SearchOutlined />}
+                  onClick={verifyHash}
+                  style={{ marginLeft: '8px' }}
+                  block
+                >
+                  Verify Hash
+                </Button>
+              </Form.Item>
+            </Form>
+            <Title level={4}>第三步：验证完成，则进入认证环节</Title>
+          </Card>
+        </Content>
+      </Layout>
+    </Spin>
   );
 }
