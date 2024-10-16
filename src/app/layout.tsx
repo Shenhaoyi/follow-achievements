@@ -16,7 +16,7 @@ const geistMono = localFont({
 
 export const metadata: Metadata = {
   title: 'Follow Achievements',
-  description: 'Follow, the best rss reader',
+  description: '自助认证 Follow 订阅源',
 };
 
 export default function RootLayout({

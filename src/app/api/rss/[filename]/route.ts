@@ -22,3 +22,20 @@ export async function GET(request: Request, { params }: { params: { filename: st
     return NextResponse.json({ error: 'An error occurred while fetching the file' }, { status: 500 });
   }
 }
+
+export async function DELETE(request: Request, { params }: { params: { filename: string } }) {
+  const filename = params.filename;
+
+  try {
+    const result = await sql`DELETE FROM rss_files WHERE filename = ${filename}`;
+
+    if (result.rowCount === 0) {
+      return NextResponse.json({ error: 'File not found' }, { status: 404 });
+    }
+
+    return NextResponse.json({ message: 'File deleted successfully' }, { status: 200 });
+  } catch (error) {
+    console.error('Delete error:', error);
+    return NextResponse.json({ error: 'An error occurred while deleting the file' }, { status: 500 });
+  }
+}

@@ -1,10 +1,10 @@
 'use client';
 
-import React, { useEffect } from 'react';
-import { Form, Input, Button, Typography, message, Layout } from 'antd';
-import { CloudUploadOutlined } from '@ant-design/icons';
+import React, { useEffect, useState } from 'react';
+import { Form, Input, Button, Typography, message, Layout, Space } from 'antd';
+import { CloudUploadOutlined, CopyOutlined, ReloadOutlined } from '@ant-design/icons';
 
-const { Title } = Typography;
+const { Title, Link } = Typography;
 const { Header, Content } = Layout;
 
 const defaultContent = `<?xml version="1.0" encoding="UTF-8"?>
@@ -29,6 +29,7 @@ function generateRandomFilename() {
 export default function UploadRSS() {
   const [form] = Form.useForm();
   const [messageApi, contextHolder] = message.useMessage();
+  const [fileUrl, setFileUrl] = useState('');
 
   useEffect(() => {
     let storedFilename = localStorage.getItem('rssFilename');
@@ -36,7 +37,9 @@ export default function UploadRSS() {
       storedFilename = generateRandomFilename();
       localStorage.setItem('rssFilename', storedFilename);
     }
-    form.setFieldsValue({ filename: storedFilename, content: defaultContent });
+    const url = `${window.location.origin}/api/rss/${storedFilename}`;
+    setFileUrl(url);
+    form.setFieldsValue({ content: defaultContent });
     checkFileExistence(storedFilename);
   }, [form]);
 
@@ -79,14 +82,15 @@ export default function UploadRSS() {
     }
   };
 
-  const handleSubmit = async (values: { filename: string; content: string }) => {
+  const handleSubmit = async (values: { content: string }) => {
     try {
+      const filename = fileUrl.split('/').pop() || '';
       const response = await fetch('/api/upload-rss', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
         },
-        body: JSON.stringify(values),
+        body: JSON.stringify({ filename, content: values.content }),
       });
 
       const data = await response.json();
@@ -102,24 +106,63 @@ export default function UploadRSS() {
     }
   };
 
+  const copyToClipboard = () => {
+    navigator.clipboard.writeText(fileUrl).then(
+      () => {
+        messageApi.success('File URL copied to clipboard');
+      },
+      (err) => {
+        console.error('Could not copy text: ', err);
+        messageApi.error('Failed to copy URL');
+      },
+    );
+  };
+
+  const regenerateFile = async () => {
+    try {
+      // Delete the old file
+      const oldFilename = fileUrl.split('/').pop() || '';
+      await fetch(`/api/rss/${oldFilename}`, { method: 'DELETE' });
+
+      // Generate new file
+      const newFilename = generateRandomFilename();
+      localStorage.setItem('rssFilename', newFilename);
+      const newUrl = `${window.location.origin}/api/rss/${newFilename}`;
+      setFileUrl(newUrl);
+      form.setFieldsValue({ content: defaultContent });
+
+      await createDefaultFile(newFilename);
+      messageApi.success('File regenerated successfully');
+    } catch (err) {
+      console.error(err);
+      messageApi.error('An error occurred while regenerating the file');
+    }
+  };
+
   return (
     <Layout>
       {contextHolder}
       <Header style={{ background: '#fff', padding: '0 20px' }}>
-        <Title level={2}>Edit RSS Feed</Title>
+        <Title level={2}>编辑 RSS Feed</Title>
       </Header>
       <Content style={{ padding: '20px' }}>
         <Form form={form} onFinish={handleSubmit} layout="vertical">
-          <Form.Item
-            name="filename"
-            label="Filename"
-            rules={[{ required: true, message: 'Please input the filename!' }]}
-          >
-            <Input />
+          <Form.Item label="XML 文件网址">
+            <Link href={fileUrl} target="_blank">{fileUrl}</Link>
+          </Form.Item>
+          <Form.Item>
+            <Space>
+              <Button icon={<CopyOutlined />} onClick={copyToClipboard}>
+                拷贝网址
+              </Button>
+              <Button icon={<ReloadOutlined />} onClick={regenerateFile}>
+                重新生成
+              </Button>
+            </Space>
           </Form.Item>
           <Form.Item
             name="content"
-            label="XML Content"
+            label="XML 文件内容"
             rules={[{ required: true, message: 'Please input the XML content!' }]}
           >
             <Input.TextArea rows={20} />
