@@ -173,7 +173,7 @@ export default function UploadRSS() {
             </Form.Item>
             <Title level={4}>
               {
-                '第二步：在 Follow 中右键订阅源，打开认证页面，并将相关内容复制并填入文件相应位置（例如选择【内容】，则在<!--1、 内容-->这一行的下方粘贴即可），然后点击【更新文件】'
+                '第二步：在 Follow 左侧栏中右键点击刚才订阅的源，打开认证弹窗，将相关认证内容复制并粘贴到文件对应位置（例如选择【内容】，则在<!--1、 内容-->这一行的下方粘贴即可），然后点击【更新文件】'
               }
             </Title>
             <Form.Item name="content" label="文件内容" rules={[{ required: true, message: '请输入 XML 内容！' }]}>
@@ -185,15 +185,16 @@ export default function UploadRSS() {
               </Button>
             </Form.Item>
             <Title level={4}>第三步：回到 Follow 认证弹窗中，点击完成认证</Title>
-            <Title level={4}>第四步：依次点击【个人头像】-【成就】-【mint】，好了 100 power 到手</Title>
-            <Title level={4}>
-              最后：如果可以的话，请给我奖励 20 power（订阅下我的列表，订阅完取消订阅即可），感谢！
-            </Title>
+            <Title level={4}>第四步：在 Follow 中依次点击【个人头像】-【成就】-【mint】。</Title>
+            <Title level={4}>好了， 100 power 到手</Title>
             <Link href="https://app.follow.is/list/69441049205148672">
               <Button type="primary" block>
                 给我奖励 power
               </Button>
             </Link>
+            <Title level={4}>
+              最后：如果可以的话，请点击上方按钮给我奖励 20 power（订阅下我的列表，订阅完取消订阅即可），感谢！
+            </Title>
           </Form>
         </Card>
       </Content>
