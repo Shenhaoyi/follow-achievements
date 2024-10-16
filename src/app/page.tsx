@@ -2,7 +2,7 @@
 
 import React, { useEffect, useState } from 'react';
 import { Form, Input, Button, Typography, message, Layout, Card } from 'antd';
-import { CloudUploadOutlined, CopyOutlined, ReloadOutlined, TwitterOutlined } from '@ant-design/icons';
+import { CloudUploadOutlined, CopyOutlined, ReloadOutlined } from '@ant-design/icons';
 
 const { Title, Link } = Typography;
 const { Header, Content } = Layout;
