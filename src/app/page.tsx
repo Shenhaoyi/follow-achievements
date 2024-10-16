@@ -1,10 +1,10 @@
 'use client';
 
 import React, { useEffect, useState } from 'react';
-import { Form, Input, Button, Typography, message, Layout, Space } from 'antd';
+import { Form, Input, Button, Typography, message, Layout, Space, Card } from 'antd';
 import { CloudUploadOutlined, CopyOutlined, ReloadOutlined } from '@ant-design/icons';
 
-const { Title, Link } = Typography;
+const { Title, Link, Text } = Typography;
 const { Header, Content } = Layout;
 
 const defaultContent = `<?xml version="1.0" encoding="UTF-8"?>
@@ -49,15 +49,15 @@ export default function UploadRSS() {
       if (response.ok) {
         const fileContent = await response.text();
         form.setFieldsValue({ content: fileContent });
-        messageApi.success(`Existing file loaded: ${filename}`);
+        messageApi.success(`已加载现有文件: ${filename}`);
       } else if (response.status === 404) {
         await createDefaultFile(filename);
       } else {
-        throw new Error('Failed to check file existence');
+        throw new Error('检查文件存在性失败');
       }
     } catch (err) {
       console.error(err);
-      messageApi.error('An error occurred while checking the file');
+      messageApi.error('检查文件时发生错误');
     }
   };
 
@@ -72,13 +72,13 @@ export default function UploadRSS() {
       });
 
       if (!response.ok) {
-        throw new Error('Failed to create default file');
+        throw new Error('创建默认文件失败');
       }
 
-      messageApi.success(`Default file created: ${filename}`);
+      messageApi.success(`已创建默认文件: ${filename}`);
     } catch (err) {
       console.error(err);
-      messageApi.error('An error occurred while creating the default file');
+      messageApi.error('创建默认文件时发生错误');
     }
   };
 
@@ -96,24 +96,24 @@ export default function UploadRSS() {
       const data = await response.json();
 
       if (response.ok) {
-        messageApi.success(`File updated successfully. Access URL: ${data.url}`);
+        messageApi.success(`文件更新成功。访问地址: ${data.url}`);
       } else {
-        throw new Error(data.error || 'An error occurred while updating the file');
+        throw new Error(data.error || '更新文件时发生错误');
       }
     } catch (err) {
       console.error(err);
-      messageApi.error('An error occurred while updating the file');
+      messageApi.error('更新文件时发生错误');
     }
   };
 
   const copyToClipboard = () => {
     navigator.clipboard.writeText(fileUrl).then(
       () => {
-        messageApi.success('File URL copied to clipboard');
+        messageApi.success('文件 URL 已复制到剪贴板');
       },
       (err) => {
-        console.error('Could not copy text: ', err);
-        messageApi.error('Failed to copy URL');
+        console.error('无法复制文本: ', err);
+        messageApi.error('复制 URL 失败');
       },
     );
   };
@@ -132,47 +132,47 @@ export default function UploadRSS() {
       form.setFieldsValue({ content: defaultContent });
 
       await createDefaultFile(newFilename);
-      messageApi.success('File regenerated successfully');
+      messageApi.success('文件重新生成成功');
     } catch (err) {
       console.error(err);
-      messageApi.error('An error occurred while regenerating the file');
+      messageApi.error('重新生成文件时发生错误');
     }
   };
 
   return (
-    <Layout>
+    <Layout style={{ minHeight: '100vh' }}>
       {contextHolder}
-      <Header style={{ background: '#fff', padding: '0 20px' }}>
-        <Title level={2}>编辑 RSS Feed</Title>
+      <Header style={{ background: '#fff', padding: '0 20px', boxShadow: '0 2px 8px rgba(0,0,0,0.06)' }}>
+        <Title level={2} style={{ margin: '16px 0' }}>
+          编辑 RSS Feed
+        </Title>
       </Header>
-      <Content style={{ padding: '20px' }}>
-        <Form form={form} onFinish={handleSubmit} layout="vertical">
-          <Form.Item label="XML 文件网址">
-            <Link href={fileUrl} target="_blank">{fileUrl}</Link>
-          </Form.Item>
-          <Form.Item>
-            <Space>
-              <Button icon={<CopyOutlined />} onClick={copyToClipboard}>
-                拷贝网址
+      <Content style={{ padding: '24px', background: '#f0f2f5' }}>
+        <Card style={{ maxWidth: 800, margin: '0 auto' }}>
+          <Form form={form} onFinish={handleSubmit} layout="vertical">
+            <Form.Item label="XML 文件网址">
+              <Input.Group compact>
+                <Input style={{ width: 'calc(100% - 200px)' }} value={fileUrl} readOnly />
+                <Button type="primary" icon={<CopyOutlined />} onClick={copyToClipboard}>
+                  复制网址
+                </Button>
+              </Input.Group>
+            </Form.Item>
+            <Form.Item>
+              <Button icon={<ReloadOutlined />} onClick={regenerateFile} type="dashed" block>
+                重新生成文件
               </Button>
-              <Button icon={<ReloadOutlined />} onClick={regenerateFile}>
-                重新生成
+            </Form.Item>
+            <Form.Item name="content" label="XML 文件内容" rules={[{ required: true, message: '请输入 XML 内容！' }]}>
+              <Input.TextArea rows={20} style={{ fontFamily: 'monospace' }} />
+            </Form.Item>
+            <Form.Item>
+              <Button type="primary" htmlType="submit" icon={<CloudUploadOutlined />} block>
+                更新文件
               </Button>
-            </Space>
-          </Form.Item>
-          <Form.Item
-            name="content"
-            label="XML 文件内容"
-            rules={[{ required: true, message: 'Please input the XML content!' }]}
-          >
-            <Input.TextArea rows={20} />
-          </Form.Item>
-          <Form.Item>
-            <Button type="primary" htmlType="submit" icon={<CloudUploadOutlined />}>
-              Update RSS Feed
-            </Button>
-          </Form.Item>
-        </Form>
+            </Form.Item>
+          </Form>
+        </Card>
       </Content>
     </Layout>
   );
