@@ -35,7 +35,6 @@ export default function UploadRSS() {
     }
     setFilename(storedFilename);
 
-    // Check if file exists and get content or create new file
     checkFileExistence(storedFilename);
   }, []);
 
@@ -106,51 +105,33 @@ export default function UploadRSS() {
   };
 
   return (
-    <div className="min-h-screen bg-gray-100 py-6 flex flex-col justify-center sm:py-12">
-      <div className="relative py-3 sm:max-w-[90%] sm:mx-auto">
-        <div className="absolute inset-0 bg-gradient-to-r from-cyan-400 to-light-blue-500 shadow-lg transform -skew-y-6 sm:skew-y-0 sm:-rotate-6 sm:rounded-3xl"></div>
-        <div className="relative px-4 py-10 bg-white shadow-lg sm:rounded-3xl sm:p-20">
-          <div className="max-w-[95%] mx-auto">
-            <h1 className="text-4xl font-extrabold text-gray-900 mb-8 text-center">Edit RSS Feed</h1>
-            <form onSubmit={handleSubmit} className="space-y-8">
-              <div>
-                <label htmlFor="filename" className="block text-sm font-medium text-gray-700 mb-2">
-                  Filename
-                </label>
-                <input
-                  type="text"
-                  id="filename"
-                  value={filename}
-                  onChange={(e) => setFilename(e.target.value)}
-                  required
-                  className="w-full sm:w-2/3 px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm"
-                />
-              </div>
-              <div>
-                <label htmlFor="content" className="block text-sm font-medium text-gray-700 mb-2">
-                  XML Content
-                </label>
-                <textarea
-                  id="content"
-                  value={content}
-                  onChange={(e) => setContent(e.target.value)}
-                  required
-                  rows={20}
-                  className="w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm"
-                />
-              </div>
-              <button
-                type="submit"
-                className="w-full sm:w-auto px-6 py-3 border border-transparent text-base font-medium rounded-md text-white bg-indigo-600 hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500"
-              >
-                Update RSS Feed
-              </button>
-            </form>
-            {message && <p className="mt-6 text-sm text-green-600">{message}</p>}
-            {error && <p className="mt-6 text-sm text-red-600">{error}</p>}
-          </div>
+    <div>
+      <h1>Edit RSS Feed</h1>
+      <form onSubmit={handleSubmit}>
+        <div>
+          <label htmlFor="filename">Filename</label>
+          <input
+            type="text"
+            id="filename"
+            value={filename}
+            onChange={(e) => setFilename(e.target.value)}
+            required
+          />
         </div>
-      </div>
+        <div>
+          <label htmlFor="content">XML Content</label>
+          <textarea
+            id="content"
+            value={content}
+            onChange={(e) => setContent(e.target.value)}
+            required
+            rows={20}
+          />
+        </div>
+        <button type="submit">Update RSS Feed</button>
+      </form>
+      {message && <p>{message}</p>}
+      {error && <p>{error}</p>}
     </div>
   );
 }
