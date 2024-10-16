@@ -7,20 +7,27 @@ import { CloudUploadOutlined, CopyOutlined, ReloadOutlined } from '@ant-design/i
 const { Title, Link } = Typography;
 const { Header, Content } = Layout;
 
-const defaultContent = `<?xml version="1.0" encoding="UTF-8"?>
+const defaultContent = `
+<?xml version="1.0" encoding="UTF-8"?>
 <rss version="2.0">
   <channel>
     <title>Your RSS Feed Title</title>
     <link>https://your-website.com</link>
-    <description>Your RSS Feed Description</description>
+    <description>
+      <!--2、 描述-->
+    </description>
     <item>
       <title>Example Item</title>
       <link>https://your-website.com/example-item</link>
-      <description>This is an example item in your RSS feed.</description>
+      <description>
+        <!--1、内容-->
+      </description>
       <pubDate>Mon, 06 Sep 2021 12:00:00 GMT</pubDate>
     </item>
+    <!--3、RSS 标签-->
   </channel>
-</rss>`;
+</rss>
+`;
 
 function generateRandomFilename() {
   return `rss_feed_${Math.random().toString(36).substring(2, 15)}.xml`;
@@ -165,10 +172,12 @@ export default function UploadRSS() {
               </Button>
             </Form.Item>
             <Title level={4}>
-              第二步：在 Follow 中右键订阅源，打开认证页面，并将相关内容复制并填入文件相应位置，然后点击【更新文件】
+              {
+                '第二步：在 Follow 中右键订阅源，打开认证页面，并将相关内容复制并填入文件相应位置（例如选择【内容】，则在<!--1、 内容-->这一行的下方粘贴即可），然后点击【更新文件】'
+              }
             </Title>
             <Form.Item name="content" label="文件内容" rules={[{ required: true, message: '请输入 XML 内容！' }]}>
-              <Input.TextArea rows={20} style={{ fontFamily: 'monospace' }} />
+              <Input.TextArea rows={22} style={{ fontFamily: 'monospace' }} />
             </Form.Item>
             <Form.Item>
               <Button type="primary" htmlType="submit" icon={<CloudUploadOutlined />} block>
@@ -177,7 +186,9 @@ export default function UploadRSS() {
             </Form.Item>
             <Title level={4}>第三步：回到 Follow 认证弹窗中，点击完成认证</Title>
             <Title level={4}>第四步：依次点击【个人头像】-【成就】-【mint】，好了 100 power 到手</Title>
-            <Title level={4}>最后：如果可以的话，请给我奖励 20 power（订阅下我的列表，订阅完取消订阅即可），感谢！</Title>
+            <Title level={4}>
+              最后：如果可以的话，请给我奖励 20 power（订阅下我的列表，订阅完取消订阅即可），感谢！
+            </Title>
             <Link href="https://app.follow.is/list/69441049205148672">
               <Button type="primary" block>
                 给我奖励 power
