@@ -1,6 +1,11 @@
 'use client';
 
-import React, { useState, FormEvent, useEffect } from 'react';
+import React, { useEffect } from 'react';
+import { Form, Input, Button, Typography, message, Layout } from 'antd';
+import { CloudUploadOutlined } from '@ant-design/icons';
+
+const { Title } = Typography;
+const { Header, Content } = Layout;
 
 const defaultContent = `<?xml version="1.0" encoding="UTF-8"?>
 <rss version="2.0">
@@ -22,10 +27,8 @@ function generateRandomFilename() {
 }
 
 export default function UploadRSS() {
-  const [filename, setFilename] = useState<string>('');
-  const [content, setContent] = useState<string>(defaultContent);
-  const [message, setMessage] = useState<string>('');
-  const [error, setError] = useState<string>('');
+  const [form] = Form.useForm();
+  const [messageApi, contextHolder] = message.useMessage();
 
   useEffect(() => {
     let storedFilename = localStorage.getItem('rssFilename');
@@ -33,18 +36,17 @@ export default function UploadRSS() {
       storedFilename = generateRandomFilename();
       localStorage.setItem('rssFilename', storedFilename);
     }
-    setFilename(storedFilename);
-
+    form.setFieldsValue({ filename: storedFilename, content: defaultContent });
     checkFileExistence(storedFilename);
-  }, []);
+  }, [form]);
 
   const checkFileExistence = async (filename: string) => {
     try {
       const response = await fetch(`/api/rss/${filename}`);
       if (response.ok) {
         const fileContent = await response.text();
-        setContent(fileContent);
-        setMessage(`Existing file loaded: ${filename}`);
+        form.setFieldsValue({ content: fileContent });
+        messageApi.success(`Existing file loaded: ${filename}`);
       } else if (response.status === 404) {
         await createDefaultFile(filename);
       } else {
@@ -52,7 +54,7 @@ export default function UploadRSS() {
       }
     } catch (err) {
       console.error(err);
-      setError('An error occurred while checking the file');
+      messageApi.error('An error occurred while checking the file');
     }
   };
 
@@ -70,68 +72,65 @@ export default function UploadRSS() {
         throw new Error('Failed to create default file');
       }
 
-      setMessage(`Default file created: ${filename}`);
+      messageApi.success(`Default file created: ${filename}`);
     } catch (err) {
       console.error(err);
-      setError('An error occurred while creating the default file');
+      messageApi.error('An error occurred while creating the default file');
     }
   };
 
-  const handleSubmit = async (e: FormEvent<HTMLFormElement>) => {
-    e.preventDefault();
-    setMessage('');
-    setError('');
-
+  const handleSubmit = async (values: { filename: string; content: string }) => {
     try {
       const response = await fetch('/api/upload-rss', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
         },
-        body: JSON.stringify({ filename, content }),
+        body: JSON.stringify(values),
       });
 
       const data = await response.json();
 
       if (response.ok) {
-        setMessage(`File updated successfully. Access URL: ${data.url}`);
+        messageApi.success(`File updated successfully. Access URL: ${data.url}`);
       } else {
-        setError(data.error || 'An error occurred while updating the file');
+        throw new Error(data.error || 'An error occurred while updating the file');
       }
     } catch (err) {
       console.error(err);
-      setError('An error occurred while updating the file');
+      messageApi.error('An error occurred while updating the file');
     }
   };
 
   return (
-    <div>
-      <h1>Edit RSS Feed</h1>
-      <form onSubmit={handleSubmit}>
-        <div>
-          <label htmlFor="filename">Filename</label>
-          <input
-            type="text"
-            id="filename"
-            value={filename}
-            onChange={(e) => setFilename(e.target.value)}
-            required
-          />
-        </div>
-        <div>
-          <label htmlFor="content">XML Content</label>
-          <textarea
-            id="content"
-            value={content}
-            onChange={(e) => setContent(e.target.value)}
-            required
-            rows={20}
-          />
-        </div>
-        <button type="submit">Update RSS Feed</button>
-      </form>
-      {message && <p>{message}</p>}
-      {error && <p>{error}</p>}
-    </div>
+    <Layout>
+      {contextHolder}
+      <Header style={{ background: '#fff', padding: '0 20px' }}>
+        <Title level={2}>Edit RSS Feed</Title>
+      </Header>
+      <Content style={{ padding: '20px' }}>
+        <Form form={form} onFinish={handleSubmit} layout="vertical">
+          <Form.Item
+            name="filename"
+            label="Filename"
+            rules={[{ required: true, message: 'Please input the filename!' }]}
+          >
+            <Input />
+          </Form.Item>
+          <Form.Item
+            name="content"
+            label="XML Content"
+            rules={[{ required: true, message: 'Please input the XML content!' }]}
+          >
+            <Input.TextArea rows={20} />
+          </Form.Item>
+          <Form.Item>
+            <Button type="primary" htmlType="submit" icon={<CloudUploadOutlined />}>
+              Update RSS Feed
+            </Button>
+          </Form.Item>
+        </Form>
+      </Content>
+    </Layout>
   );
 }
