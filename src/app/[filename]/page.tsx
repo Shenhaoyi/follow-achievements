@@ -2,7 +2,8 @@
 
 import React, { useEffect, useState } from 'react';
 import { Form, Input, Button, Typography, message, Layout, Card, Spin } from 'antd';
-import { CloudUploadOutlined, CopyOutlined } from '@ant-design/icons';
+import { CloudUploadOutlined, CopyOutlined, RollbackOutlined } from '@ant-design/icons';
+import { defaultContent } from '@/app/constants';
 
 const { Title } = Typography;
 const { Header, Content } = Layout;
@@ -78,6 +79,10 @@ export default function UploadRSS({ params }: { params: { filename: string } }) 
     );
   };
 
+  const resetFileContent = () => {
+    form.setFieldsValue({ content: defaultContent });
+  };
+
   return (
     <Spin spinning={loading} tip="Loading...">
       <Layout style={{ minHeight: '100vh' }}>
@@ -108,8 +113,11 @@ export default function UploadRSS({ params }: { params: { filename: string } }) 
                 <Input.TextArea rows={22} style={{ fontFamily: 'monospace' }} />
               </Form.Item>
               <Form.Item>
-                <Button type="primary" htmlType="submit" icon={<CloudUploadOutlined />} block>
+                <Button type="primary" htmlType="submit" icon={<CloudUploadOutlined />}>
                   更新文件
+                </Button>{' '}
+                <Button type="default" icon={<RollbackOutlined />} onClick={resetFileContent}>
+                  重置文件内容
                 </Button>
               </Form.Item>
               <Title level={4}>第三步：回到 Follow 认证弹窗中，点击完成认证</Title>
