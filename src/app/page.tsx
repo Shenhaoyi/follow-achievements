@@ -2,7 +2,6 @@
 
 import React, { useState } from 'react';
 import { Form, Input, Button, Typography, message, Card, Layout, Spin } from 'antd';
-import { SearchOutlined } from '@ant-design/icons';
 
 const { Title } = Typography;
 const { Header, Content } = Layout;
