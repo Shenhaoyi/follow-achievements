@@ -18,8 +18,9 @@ const geistMono = localFont({
 });
 
 export const metadata: Metadata = {
-  title: 'Follow Achievements',
-  description: '自助认证 Follow 订阅源',
+  title: 'Follow 认证订阅源',
+  description: '已经注册 power 的朋友，赶紧来认证 Follow 订阅源领取 100 power吧',
+  keywords: 'Follow认证, 订阅源, Power, RSS',
 };
 
 export default function RootLayout({
