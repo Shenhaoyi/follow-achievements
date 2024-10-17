@@ -170,17 +170,10 @@ export default function UploadRSS() {
                   value={hashInput}
                   onChange={(e) => setHashInput(e.target.value)}
                   placeholder="Enter hash value to verify"
-                  style={{ width: 'calc(100% - 120px)' }}
                 />
               </Form.Item>
               <Form.Item>
-                <Button
-                  type="primary"
-                  icon={<SearchOutlined />}
-                  onClick={verifyHash}
-                  style={{ marginLeft: '8px' }}
-                  block
-                >
+                <Button type="primary" onClick={verifyHash} block>
                   验证
                 </Button>
               </Form.Item>
