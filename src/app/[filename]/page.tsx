@@ -1,7 +1,7 @@
 'use client';
 
 import React, { useEffect, useState } from 'react';
-import { Form, Input, Button, Typography, message, Layout, Card, Spin } from 'antd';
+import { Form, Input, Button, Typography, message, Layout, Card, Spin, Alert, Divider } from 'antd';
 import { CloudUploadOutlined, CopyOutlined, RollbackOutlined } from '@ant-design/icons';
 import { defaultContent } from '@/app/constants';
 
@@ -60,8 +60,7 @@ export default function UploadRSS({ params }: { params: { filename: string } }) 
         throw new Error(data.error || '更新文件时发生错误');
       }
     } catch (err) {
-      console.error(err);
-      messageApi.error('更新文件时发生错误');
+      messageApi.error((err as Error).message);
     } finally {
       setLoading(false);
     }
@@ -95,6 +94,11 @@ export default function UploadRSS({ params }: { params: { filename: string } }) 
         <Content style={{ padding: '24px', background: '#f0f2f5' }}>
           <Card style={{ maxWidth: 800, margin: '0 auto' }}>
             <Form form={form} onFinish={handleSubmit} layout="vertical">
+              <Alert
+                message="说明：请在 20 分钟内完成认证，否则将无法认证成功，有特殊原因请电报联系我"
+                type="warning"
+              />
+              <Divider />
               <Title level={4}>第一步：复制网址，然后去 Follow 中订阅</Title>
               <Form.Item label="网址">
                 <Input.Group compact>

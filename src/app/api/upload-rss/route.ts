@@ -16,6 +16,18 @@ export async function POST(request: Request) {
     if (existing.rows.length > 0) {
       // 更新现有文件
       await sql`UPDATE rss_files SET content = ${content} WHERE filename = ${filename}`;
+
+    const now = new Date();
+    if (existing.rows.length > 0) {
+      const createdAt = new Date(existing.rows[0].created_at);
+      const timeDiff = now.getTime() - createdAt.getTime();
+      const minutesDiff = Math.floor(timeDiff / 60000);
+      if (minutesDiff > 20) {
+        return NextResponse.json({ error: '文件创建超过20分钟，无法修改' }, { status: 403 });
+      }
+    }
+
+
     } else {
       // 创建新文件
       await sql`INSERT INTO rss_files (filename, content) VALUES (${filename}, ${content})`;
