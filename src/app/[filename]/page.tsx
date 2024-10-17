@@ -101,7 +101,7 @@ export default function UploadRSS({ params }: { params: { filename: string } }) 
               </Form.Item>
               <Title level={4}>
                 {
-                  '第二步：在 Follow 左侧栏中右键点击刚才订阅的源，打开认证弹窗，将相关认证内容复制并粘贴到文件对应位置（例如选择【内容】，则在<!--1、 内容-->这一行的下方粘贴即可），然后点击【更新文件】'
+                  '第二步：在 Follow 左侧栏中右键点击刚才订阅的源，点击【认证】打开认证弹窗，将相关认证内容复制并粘贴到文件对应位置（三种方式任选其一，例如选择【内容】，则在<!--1、 内容-->这一行的下方粘贴即可），然后点击下方的【更新文件】'
                 }
               </Title>
               <Form.Item name="content" label="文件内容" rules={[{ required: true, message: '请输入 XML 内容！' }]}>

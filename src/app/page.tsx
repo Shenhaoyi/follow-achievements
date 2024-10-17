@@ -161,7 +161,8 @@ export default function UploadRSS() {
               </Form.Item>
 
               <Title level={4}>
-                第二步：复制订阅时扣除 power 的交易哈希值（见交易记录中最后一列）到下方输入框，点击验证
+                第二步：复制订阅时扣除 power 的交易哈希值（ 见 power
+                页面的【交易记录】中最后一列）到下方输入框，点击验证
               </Title>
               <Form.Item label="交易哈希值">
                 <Input
