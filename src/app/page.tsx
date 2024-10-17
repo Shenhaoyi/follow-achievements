@@ -8,8 +8,7 @@ const { Header, Content } = Layout;
 
 const myHash = '0xf2645bdfd2fee181e794243f586df0b95e8c0752';
 
-const defaultContent = `
-<?xml version="1.0" encoding="UTF-8"?>
+const defaultContent = `<?xml version="1.0" encoding="UTF-8"?>
 <rss version="2.0">
   <channel>
     <title>Your RSS Feed Title</title>
