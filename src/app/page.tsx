@@ -89,7 +89,7 @@ export default function UploadRSS() {
       if (response.ok) {
         const { exists, filename } = await response.json();
         if (exists) {
-          message.error('已经认证过，为您跳转到对应的文件');
+          message.info('已经认证过，为您跳转到对应的文件');
           window.location.href = `/${filename}`;
         } else {
           // 添加到数据
@@ -140,7 +140,7 @@ export default function UploadRSS() {
     <Spin spinning={loading} tip="Loading...">
       <Layout style={{ minHeight: '100vh' }}>
         <Header style={{ background: '#fff', padding: '0 20px', boxShadow: '0 2px 8px rgba(0,0,0,0.06)' }}>
-          <Title level={2} style={{ margin: '16px 0' }}>
+          <Title level={3} style={{ margin: '16px 0' }}>
             自助认证 Follow 订阅源，获取 100 power
           </Title>
         </Header>

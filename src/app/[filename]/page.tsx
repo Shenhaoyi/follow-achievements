@@ -83,7 +83,7 @@ export default function UploadRSS({ params }: { params: { filename: string } }) 
       <Layout style={{ minHeight: '100vh' }}>
         {contextHolder}
         <Header style={{ background: '#fff', padding: '0 20px', boxShadow: '0 2px 8px rgba(0,0,0,0.06)' }}>
-          <Title level={2} style={{ margin: '16px 0' }}>
+          <Title level={3} style={{ margin: '16px 0' }}>
             自助认证 Follow 订阅源，获取 100 power
           </Title>
         </Header>
